@@ -52,5 +52,16 @@ describe Rainbow::Template::Block do
                                         { "Body" => "b2" },
                                         { "Body" => "b3" }]}).must_equal "b1b2b3"
     end
+
+    it "should be able to compile nested block" do
+      sexp = [:multi, [:block, "block:Posts", [:multi, [:block, "block:Text", [:multi, [:variable, "Body"],
+                                                                                       [:close_block, "block:Text"]]],
+                                                                                       [:close_block, "block:Posts"]]]]
+      block = Rainbow::Template::Block.new(sexp)
+      block.compile.must_equal ""
+      block.compile({"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }}]}).must_equal "Hello World"
+      block.compile({"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }},
+                                       {"block:Text" => { "Body" => "Hello World2" }}]}).must_equal "Hello WorldHello World2"
+    end
   end
 end
