@@ -57,7 +57,7 @@ describe Rainbow::Template::Parser do
                                [:variable, "Description"]]
 
     end
-    
+
     it "should be able to parse a template with html tags" do
       template = "<html>{Title}<body>test1234{Description}</body>"
       sexp = @parser.call(template)
@@ -103,6 +103,13 @@ describe Rainbow::Template::Parser do
       template = "{block:Posts}{block:Title}{/block:Title}{/block:Posts}"
       sexp = @parser.call(template)
       sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:block, "block:Title", [:multi, [:close_block, "block:Title"]]],
+                                                                [:close_block, "block:Posts"]]]]
+    end
+
+    it "should be able to handle new line" do
+      template = "{block:Posts}\n{/block:Posts}"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:static, "\n"],
                                                                 [:close_block, "block:Posts"]]]]
     end
   end

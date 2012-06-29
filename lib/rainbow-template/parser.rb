@@ -30,7 +30,7 @@ module Rainbow
 
         tag_found = false
         # Find variables
-        ["Title", "Description"].each do |variable|
+        Parser.variable_tags.each do |variable|
           variable_tag = @scanner.scan(/#{variable}#{Regexp.escape(ctag)}/)
           if variable_tag
             @result << [:variable, variable_tag[0..-2]]
@@ -40,7 +40,7 @@ module Rainbow
         end
 
         # Find blocks
-        ["block:Posts","block:Title"].each do |block|
+        Parser.block_tags.each do |block|
           block_tag = @scanner.scan(/#{block}#{Regexp.escape(ctag)}/)
           if block_tag
             @result << [:block, block_tag[0..-2]]
@@ -103,6 +103,16 @@ module Rainbow
 
       def ctag
         @ctag ||= "}"
+      end
+
+      class << self
+        def variable_tags
+          ["Title", "Description", "Avatar", "URL"]
+        end
+
+        def block_tags
+          ["block:Posts", "block:Title", "block:Avatar"]
+        end
       end
     end
   end
