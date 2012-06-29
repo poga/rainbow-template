@@ -14,9 +14,15 @@ module Rainbow
         when :variable
           context[exp[1]]
         when :block
-          if context["#{exp[1]}:visible"] || context[exp[1]]
+          if context[exp[1]]
             block = Block.new( exp[2] )
-            block.compile( context[exp[1]] )
+            if context[exp[1]] == true
+              block.compile
+            elsif context[exp[1]].is_a? Array
+              context[exp[1]].map { |ctx| block.compile(ctx) }.join
+            else
+              block.compile( context[exp[1]] )
+            end
           end
         end
       end

@@ -23,16 +23,34 @@ describe Rainbow::Template::Block do
                                                     [:block, "block:Text",[:multi, [:static, "in block"],
                                                                                    [:close_block, "block:Text"]]]])
 
-      block.compile( {"block:Text:visible" => false}).must_equal "out of block "
-      block.compile( {"block:Text:visible" => true }).must_equal "out of block in block"
+      block.compile.must_equal "out of block "
+      block.compile( {"block:Text" => true }).must_equal "out of block in block"
     end
 
     it "should be able to compile block with scoped variables" do
       block = Rainbow::Template::Block.new([:multi, [:static, "out of block "],
                                                     [:block, "block:Text",[:multi, [:variable, "Body"],
                                                                                    [:close_block, "block:Text"]]]])
-      block.compile( {"block:Text:visible" => false}).must_equal "out of block "
+      block.compile.must_equal "out of block "
       block.compile( {"block:Text" => { "Body" => "hello world" }} ).must_equal "out of block hello world"
+    end
+
+    it "should be able to compile iterator block" do
+      block = Rainbow::Template::Block.new([:multi, [:block, "block:Posts", [:multi, [:static, "block"],
+                                                                                     [:close_block, "block:Posts"]]]])
+      block.compile.must_equal ""
+      block.compile( {"block:Posts" => [{ "Body" => "b1" },
+                                        { "Body" => "b2" },
+                                        { "Body" => "b3" }]}).must_equal "block"*3
+    end
+
+    it "should be able to compile iterator block with variables" do
+      block = Rainbow::Template::Block.new([:multi, [:block, "block:Posts", [:multi, [:variable, "Body"],
+                                                                                     [:close_block, "block:Posts"]]]])
+      block.compile.must_equal ""
+      block.compile( {"block:Posts" => [{ "Body" => "b1" },
+                                        { "Body" => "b2" },
+                                        { "Body" => "b3" }]}).must_equal "b1b2b3"
     end
   end
 end
