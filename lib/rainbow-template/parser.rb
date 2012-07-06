@@ -91,9 +91,9 @@ module Rainbow
 
         unless tag_found
           # Unknown content between {}
-          x = @scanner.scan(/([\w]*?)#{Regexp.escape(ctag)}/)
+          x = @scanner.scan(/([\w]*?)(#{Regexp.escape(ctag)})/)
           unknown = @scanner[1]
-          @result << [:static, "#{otag}#{unknown}#{ctag}"]
+          @result << [:static, "#{otag}#{unknown}#{@scanner[2]}"]
         end
       end
 

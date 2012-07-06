@@ -157,6 +157,12 @@ describe Rainbow::Template::Parser do
                                                                 [:close_block, "block:Posts"]]]]
     end
 
+    it "should be able to handle dangling bracelet" do
+      template = "{"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:static, "{"]]
+    end
+
   end
 end
 
