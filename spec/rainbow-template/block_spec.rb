@@ -64,7 +64,7 @@ describe Rainbow::Template::Block do
       block.compile.must_equal "Hello World"
 
       ctx2 = {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }},
-                                       {"block:Text" => { "Body" => "Hello World2" }}]}
+                                {"block:Text" => { "Body" => "Hello World2" }}]}
       block = Rainbow::Template::Block.new(sexp, ctx2)
       block.compile.must_equal "Hello WorldHello World2"
     end
