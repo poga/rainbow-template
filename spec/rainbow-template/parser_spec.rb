@@ -108,12 +108,55 @@ describe Rainbow::Template::Parser do
                                                                 [:close_block, "block:Posts"]]]]
     end
 
+    it "should be able to parse incorrect nested block" do
+      template = "{block:Posts}{block:Posts}{/block:Posts}{/block:Posts}"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:block, "block:Posts", [:multi, [:close_block, "block:Posts"]]],
+                                                                [:close_block, "block:Posts"]]]]
+    end
+
     it "should be able to handle new line" do
       template = "{block:Posts}\n{/block:Posts}"
       sexp = @parser.call(template)
       sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:static, "\n"],
                                                                 [:close_block, "block:Posts"]]]]
     end
+
+    it "should be able to parse a unclosed block" do
+      template = "{block:Posts}test"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:static, "test"]]]]
+    end
+
+    it "should be able to parse multiple unclosed block" do
+      template = "{block:Posts}{block:Title}test"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:block, "block:Title", [:multi, [:static, "test"]]]]]]
+    end
+
+    it "should handle a complex block case" do
+      template = "{block:Posts}{block:Title}{block:Avatar}test{/block:Title}"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:block, "block:Title", [:multi, [:block, "block:Avatar", [:multi, [:static, "test"],
+                                                                                                                                   [:close_block, "block:Title"]]]]]]]]
+    end
+
+    it "should handle unopened block case" do
+      template = "{block:Posts}test{/block:Posts}{/block:Title}"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:static, "test"],
+                                                                [:close_block, "block:Posts"]]],
+                               [:close_block, "block:Title"]]
+    end
+
+    it "should handle another unopened block case" do
+      template = "{block:Posts}test{/block:Title}{/block:Posts}"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:block, "block:Posts", [:multi, [:static, "test"],
+                                                                [:close_block, "block:Title"],
+                                                                [:close_block, "block:Posts"]]]]
+    end
+
   end
 end
 

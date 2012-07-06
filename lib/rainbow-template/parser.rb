@@ -19,6 +19,17 @@ module Rainbow
           scan_tags || scan_text
         end
 
+        if !@blocks.empty?
+          # We have unclosed block, unroll stack
+          while @blocks.size != 0
+            open_block_tag, result = @blocks[-1]
+            current_block = @result
+            @result = result
+            @result.last << (current_block)
+            @blocks.pop
+          end
+        end
+
         return @result
       end
 
@@ -50,7 +61,7 @@ module Rainbow
           block_tag = @scanner.scan(/#{block}#{Regexp.escape(ctag)}/)
           if block_tag
             @result << [:block, block_tag[0..-2]]
-            @blocks << [block_tag, @result]
+            @blocks << [block_tag[0..-2], @result]
             @result = [:multi]
             tag_found = true
             break
@@ -58,13 +69,23 @@ module Rainbow
 
           close_block_tag = @scanner.scan(/\/#{block}#{Regexp.escape(ctag)}/)
           if close_block_tag
-            open_block_tag, result = @blocks[-1]
-            current_block = @result
-            @result = result
-            @result.last << (current_block << [:close_block, close_block_tag[1..-2]])
-            @blocks.pop
-            tag_found = true
-            break
+            if @blocks.empty?
+              @result << [:close_block, close_block_tag[1..-2]]
+              tag_found = true
+            else
+              open_block_tag, result = @blocks[-1]
+              if open_block_tag != close_block_tag[1..-2]
+                @result << [:close_block, close_block_tag[1..-2]]
+                tag_found = true
+              else
+                current_block = @result
+                @result = result
+                @result.last << (current_block << [:close_block, close_block_tag[1..-2]])
+                @blocks.pop
+                tag_found = true
+                break
+              end
+            end
           end
         end
 
