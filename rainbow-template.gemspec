@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Poga Po"]
   s.email       = ["poga.bahamut@gmail.com"]
   s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.summary     = %q{a tumblr-like template engine}
+  s.description = %q{a logic-less, never-throw-exception template engine}
 
   s.rubyforge_project = "rainbow-template"
 
