@@ -26,6 +26,7 @@ module Rainbow
           end
         end
       end
-  end
+
+    end
   end
 end

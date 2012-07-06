@@ -4,6 +4,8 @@ describe Rainbow::Template::Parser do
   describe "A parser" do
     before do
       @parser = Rainbow::Template::Parser.new
+      @parser.variable_tags = ["Title", "Description", "Avatar", "URL"]
+      @parser.block_tags = ["Posts", "Title", "Avatar"].map { |t| "block:#{t}" }
     end
 
     it "should response to :call" do
