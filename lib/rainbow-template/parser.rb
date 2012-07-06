@@ -20,7 +20,7 @@ module Rainbow
         end
 
         if !@blocks.empty?
-          # We have unclosed block, unroll stack
+          # We have unclosed block
           while @blocks.size != 0
             open_block_tag, result = @blocks[-1]
             current_block = @result
