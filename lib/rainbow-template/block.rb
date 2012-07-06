@@ -8,7 +8,7 @@ module Rainbow
         @context = context
       end
 
-      def compile(context = context)
+      def compile
         Generator.new.compile(@source, context)
       end
     end
