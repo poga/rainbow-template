@@ -12,7 +12,11 @@ module Rainbow
         when :static
           exp[1]
         when :variable
-          context[exp[1]]
+          if context[exp[1]].nil?
+            "#{@options[:otag]}#{exp[1]}#{@options[:ctag]}"
+          else
+            context[exp[1]]
+          end
         when :block
           if context[exp[1]]
             if context[exp[1]] == true

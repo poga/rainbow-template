@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Rainbow::Template::Generator do
   describe "A generator" do
     before do
-      @generator = Rainbow::Template::Generator.new
+      @generator = Rainbow::Template::Generator.new :otag => "{",
+                                                    :ctag => "}"
     end
 
     it "should be able to compile a static expression to string" do
@@ -23,6 +24,13 @@ describe Rainbow::Template::Generator do
                       [:variable, "Title"]]
       ctx = {"Title" => "World"}
       @generator.compile(sexp, ctx).must_equal "Hello World"
+    end
+
+    it "should be able to handle undefined variable" do
+      sexp = [:multi, [:static, "Hello "],
+                      [:variable, "Title"]]
+      ctx = {}
+      @generator.compile(sexp, ctx).must_equal "Hello {Title}"
     end
 
     it "should be able to compile block expressions with true/false" do
@@ -63,12 +71,22 @@ describe Rainbow::Template::Generator do
     it "should be able to compile nested block" do
       sexp = [:multi, [:block, "block:Posts", [:multi, [:block, "block:Text", [:multi, [:variable, "Body"],
                                                                                        [:close_block, "block:Text"]]],
-                                                                                       [:close_block, "block:Posts"]]]]
+                                                       [:close_block, "block:Posts"]]]]
       @generator.compile(sexp, {}).must_equal ""
       @generator.compile(sexp, {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }}]}).must_equal "Hello World"
       @generator.compile(sexp, {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }},
                                                   {"block:Text" => { "Body" => "Hello World2" }}]}).must_equal "Hello WorldHello World2"
     end
-    
+
+    it "should be able to handle incorrect nested block" do
+      sexp = [:multi, [:block, "block:Posts", [:multi, [:block, "block:Posts", [:multi, [:variable, "Body"],
+                                                                                        [:close_block, "block:Posts"]]],
+                                                       [:close_block, "block:Posts"]]]]
+
+      @generator.compile(sexp, {}).must_equal ""
+      @generator.compile(sexp, {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }}]}).must_equal ""
+      @generator.compile(sexp, {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }},
+                                                  {"block:Text" => { "Body" => "Hello World2" }}]}).must_equal ""
+    end
   end
 end
