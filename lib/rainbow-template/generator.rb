@@ -31,9 +31,13 @@ module Rainbow
               block = Block.new( exp[2], context[exp[1]]  )
               block.compile
             end
+          else
+            # Do nothing if the block variable does not exist
           end
         end
       end
+
+      alias call compile
 
     end
   end

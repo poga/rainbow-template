@@ -12,7 +12,7 @@
 # Hence, The incorrect nested block will be shown in the generated result, providing some debug information
 module Rainbow
   module Template
-    class StaticizeIncorrectBlock
+    class StaticizeIncorrectBlockHierarchy
       attr_accessor :grammer
       attr_reader :options
 

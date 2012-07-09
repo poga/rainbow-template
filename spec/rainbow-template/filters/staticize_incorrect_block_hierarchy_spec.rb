@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe "A staticize incorrect block filter" do
   before do
-    @filter = Rainbow::Template::StaticizeIncorrectBlock.new :otag => "{",
-                                                             :ctag => "}"
+    @filter = Rainbow::Template::StaticizeIncorrectBlockHierarchy.new :otag => "{",
+                                                                      :ctag => "}"
     @filter.grammer = { "block:Posts" => [ "block:Title" ] }
   end
 
