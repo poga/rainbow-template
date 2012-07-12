@@ -41,7 +41,7 @@ module Rainbow
               block.compile
             end
           else
-            # Do nothing if the block variable does not exist
+            "" # Do nothing if the block variable does not exist
           end
         end
       end
