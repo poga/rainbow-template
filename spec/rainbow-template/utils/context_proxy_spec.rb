@@ -38,4 +38,9 @@ describe "a context proxy" do
     proxy["block"].must_be_kind_of Array
     proxy["block"][0].must_be_kind_of Rainbow::Template::ContextProxy
   end
+
+  it "should be able to handle nil block" do
+    proxy = Rainbow::Template::ContextProxy.new({}, binding)
+    proxy["test"].must_equal nil
+  end
 end

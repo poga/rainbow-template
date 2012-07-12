@@ -22,6 +22,8 @@ module Rainbow
           return ContextProxy.new @context[key], @binding
         elsif @context[key].is_a? Array
           return @context[key].map { |c| ContextProxy.new(c, @binding) }
+        elsif @context[key].nil?
+          return nil
         else
           raise "ERROR: #{key}, #{@context[key]}"
         end
