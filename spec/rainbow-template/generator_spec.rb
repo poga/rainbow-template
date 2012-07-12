@@ -90,6 +90,11 @@ describe Rainbow::Template::Generator do
                                                   {"block:Text" => { "Body" => "Hello World2" }}]}).must_equal ""
     end
 
+    it "should be able to handle nil variable" do
+      sexp = [:variable, "foo"]
+      @generator.compile(sexp, { "foo" => nil }).must_equal ""
+    end
+
     it "should be able to generate variable string from a context proxy" do
       sexp = [:variable, "foo"]
       def foo

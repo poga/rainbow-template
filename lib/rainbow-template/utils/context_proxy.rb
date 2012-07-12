@@ -28,6 +28,10 @@ module Rainbow
           raise "ERROR: #{key}, #{@context[key]}"
         end
       end
+
+      def has_key?(key)
+        return @context.has_key? key
+      end
     end
   end
 end

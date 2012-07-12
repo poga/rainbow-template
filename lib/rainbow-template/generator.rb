@@ -18,10 +18,10 @@ module Rainbow
         when :variable
           # exp[0] = :variable
           # exp[1] = variable name
-          if context[exp[1]].nil?
+          if !context.has_key? exp[1]
             "#{otag}#{exp[1]}#{ctag}"
           else
-            context[exp[1]]
+            context[exp[1]].to_s
           end
         when :block
           # exp[0] = :block
