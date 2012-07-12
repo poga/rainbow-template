@@ -8,16 +8,25 @@ module Rainbow
       def compile(exp, context)
         case exp.first
         when :multi
+          # exp[0] = :multi
+          # exp[1..-1] == array of S-expressions
           exp[1..-1].map { |e| compile(e, context) }.join
         when :static
+          # exp[0] = :static
+          # exp[1] = static string
           exp[1]
         when :variable
+          # exp[0] = :variable
+          # exp[1] = variable name
           if context[exp[1]].nil?
             "#{@options[:otag]}#{exp[1]}#{@options[:ctag]}"
           else
             context[exp[1]]
           end
         when :block
+          # exp[0] = :block
+          # exp[1] = block name
+          # exp[2] = multi block
           if context[exp[1]]
             if context[exp[1]] == true
               block = Block.new( exp[2] )
