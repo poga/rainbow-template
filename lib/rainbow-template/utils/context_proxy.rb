@@ -4,18 +4,28 @@
 # ex.
 # { :blog => { :title => HelperProxy.new('r_blog("title")'),
 #              :url => HelperProxy.new('r_blog("url")') } }
-class ContextProxy
-  def initialize(context_hash, bind)
-    @context = context_hash
-    @binding = bind
-  end
+module Rainbow
+  module Template
+    class ContextProxy
+      def initialize(context_hash, bind)
+        @context = context_hash
+        @binding = bind
+      end
 
 
-  def [](key)
-    if @context[key].is_a? HelperProxy
-      return @context[key].call(@binding)
-    else
-      return ContextProxy.new @context[key], @binding
+      def [](key)
+        if @context[key].is_a? HelperProxy
+          return @context[key].call(@binding)
+        elsif @context[key].is_a? String
+          return HelperProxy.new(@context[key]).call(@binding)
+        elsif @context[key].is_a? Hash
+          return ContextProxy.new @context[key], @binding
+        elsif @context[key].is_a? Array
+          return @context[key].map { |c| ContextProxy.new(c, @binding) }
+        else
+          raise "ERROR: #{key}, #{@context[key]}"
+        end
+      end
     end
   end
 end

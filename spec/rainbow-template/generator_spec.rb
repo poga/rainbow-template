@@ -89,5 +89,39 @@ describe Rainbow::Template::Generator do
       @generator.compile(sexp, {"block:Posts" => [{"block:Text" => { "Body" => "Hello World" }},
                                                   {"block:Text" => { "Body" => "Hello World2" }}]}).must_equal ""
     end
+
+    it "should be able to generate variable string from a context proxy" do
+      sexp = [:variable, "foo"]
+      def foo
+        return "bar"
+      end
+
+      @proxy = Rainbow::Template::ContextProxy.new({ "foo" => Rainbow::Template::HelperProxy.new("foo") }, binding)
+      @generator.compile(sexp, @proxy).must_equal "bar"
+    end
+
+    it "should be able to generate block from a context proxy" do
+      sexp = [:block, "block", [:variable, "foo"]]
+
+      def foo(x)
+        "bar#{x}"
+      end
+
+      def block
+        #(1..4).to_a.inject([]) { |s,x| s << { "foo" => "foo(#{x})" } }
+        [ { "foo" => "foo(1)" },
+          { "foo" => "foo(2)" },
+          { "foo" => "foo(3)" },
+          { "foo" => "foo(4)" }]
+      end
+
+      @proxy = Rainbow::Template::ContextProxy.new({"block" => [ { "foo" => "foo(1)" },
+          { "foo" => "foo(2)" },
+          { "foo" => "foo(3)" },
+          { "foo" => "foo(4)" }]}, binding)
+      @generator.compile(sexp, @proxy).must_equal "bar1bar2bar3bar4"
+      @proxy2 = Rainbow::Template::ContextProxy.new({"block" => "block"}, binding)
+      @generator.compile(sexp, @proxy2).must_equal "bar1bar2bar3bar4"
+    end
   end
 end
