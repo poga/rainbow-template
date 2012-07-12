@@ -19,7 +19,7 @@ module Rainbow
           # exp[0] = :variable
           # exp[1] = variable name
           if context[exp[1]].nil?
-            "#{@options[:otag]}#{exp[1]}#{@options[:ctag]}"
+            "#{otag}#{exp[1]}#{ctag}"
           else
             context[exp[1]]
           end
@@ -44,6 +44,14 @@ module Rainbow
             # Do nothing if the block variable does not exist
           end
         end
+      end
+
+      def otag
+        @otag ||= "{"
+      end
+
+      def ctag
+        @ctag ||= "}"
       end
 
       alias call compile

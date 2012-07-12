@@ -162,7 +162,6 @@ describe Rainbow::Template::Parser do
       sexp = @parser.call(template)
       sexp.must_equal [:multi, [:static, "{"]]
     end
-
   end
 end
 
