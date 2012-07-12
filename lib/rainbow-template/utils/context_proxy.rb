@@ -1,3 +1,5 @@
+# DEPRECATED
+# 
 # A context proxy is a hash which every value is either a context proxy
 # or a helper proxy
 #

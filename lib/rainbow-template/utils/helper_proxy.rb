@@ -1,3 +1,4 @@
+# DEPRECATED
 module Rainbow
   module Template
     class HelperProxy
