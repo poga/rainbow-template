@@ -40,6 +40,7 @@ describe Rainbow::Template::Generator do
 
       @generator.compile(sexp, {}).must_equal "out of block "
       @generator.compile(sexp, {"block:Text" => true }).must_equal "out of block in block"
+      @generator.compile(sexp, {"block:Text" => false}).must_equal "out of block "
     end
 
     it "should be able to compile block with scoped variables" do
