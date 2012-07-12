@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe Rainbow::Template::Generator do
@@ -91,8 +92,9 @@ describe Rainbow::Template::Generator do
     end
 
     it "should be able to handle nil variable" do
-      sexp = [:variable, "foo"]
-      @generator.compile(sexp, { "foo" => nil }).must_equal ""
+      sexp = [:multi, [:variable, "foo"],
+                      [:static, "bar"]]
+      @generator.compile(sexp, { "foo" => nil }).must_equal "bar"
     end
 
     it "should be able to generate variable string from a context proxy" do
@@ -127,6 +129,11 @@ describe Rainbow::Template::Generator do
       @generator.compile(sexp, @proxy).must_equal "bar1bar2bar3bar4"
       @proxy2 = Rainbow::Template::ContextProxy.new({"block" => "block"}, binding)
       @generator.compile(sexp, @proxy2).must_equal "bar1bar2bar3bar4"
+    end
+
+    it "should be able to handle utf-8 variable values" do
+      sexp = [:variable, "foo"]
+      @generator.compile(sexp, {"foo" => "中文"}).must_equal "中文"
     end
   end
 end

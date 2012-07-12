@@ -1,10 +1,11 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe Rainbow::Template::Parser do
   describe "A parser" do
     before do
       @parser = Rainbow::Template::Parser.new
-      @parser.variable_tags = ["Title", "Description", "Avatar", "URL"]
+      @parser.variable_tags = ["Title", "Description", "Avatar", "URL", "KeywordList"]
       @parser.block_tags = ["Posts", "Title", "Avatar"].map { |t| "block:#{t}" }
     end
 
@@ -161,6 +162,14 @@ describe Rainbow::Template::Parser do
       template = "{"
       sexp = @parser.call(template)
       sexp.must_equal [:multi, [:static, "{"]]
+    end
+
+    it "should be able to handle utf-8" do
+      template = "中文測試{block:Post}HAHAHA{/block:Post}12345{Avatar}"
+      # Parser will produce incorrect result with utf-8 character
+      # Failed on purpose, known issue
+      sexp = @parser.call(template)
+      sexp.must_equal []
     end
   end
 end
