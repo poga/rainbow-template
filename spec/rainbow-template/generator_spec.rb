@@ -52,6 +52,15 @@ describe Rainbow::Template::Generator do
       @generator.compile(sexp, {"block:Text" => { "Body" => "hello world" }} ).must_equal "out of block hello world"
     end
 
+    it "should be able to compile block with scoped variables outside of scope" do
+      sexp = [:multi, [:static, "out of block "],
+                      [:block, "block:Text",[:multi, [:variable, "Body"],
+                                                     [:variable, "Title"],
+                                                     [:close_block, "block:Text"]]]]
+      @generator.compile(sexp, {}).must_equal "out of block "
+      @generator.compile(sexp, {"block:Text" => { "Body" => "hello world" }, "Title" => "Foo" } ).must_equal "out of block hello worldFoo"
+    end
+
     it "should be able to compile collection block" do
       sexp = [:multi, [:block, "block:Posts", [:multi, [:static, "block"],
                                                        [:close_block, "block:Posts"]]]]

@@ -18,11 +18,7 @@ module Rainbow
         when :variable
           # exp[0] = :variable
           # exp[1] = variable name
-          if !context.has_key? exp[1]
-            "#{otag}#{exp[1]}#{ctag}"
-          else
-            context[exp[1]].to_s
-          end
+          variable_lookup(context, exp[1])
         when :block
           # exp[0] = :block
           # exp[1] = block name
@@ -37,7 +33,8 @@ module Rainbow
                 block.compile
               end.join
             else
-              block = Block.new( exp[2], context[exp[1]]  )
+              nest_ctx = context[exp[1]].merge({ :parentContext => single_level_context(context)})
+              block = Block.new( exp[2], nest_ctx  )
               block.compile
             end
           else
@@ -56,6 +53,21 @@ module Rainbow
 
       alias call compile
 
+      private
+
+      def single_level_context(ctx)
+        return ctx.delete_if { |k,v| v.is_a? Hash }
+      end
+
+      def variable_lookup(ctx, key)
+        if ctx.has_key? key
+          ctx[key].to_s
+        elsif ctx.has_key? :parentContext
+          variable_lookup( ctx[:parentContext], key)
+        else
+          "#{otag}#{key}#{ctag}"
+        end
+      end
     end
   end
 end
