@@ -1,3 +1,5 @@
+require 'strscan'
+
 module Rainbow
   module Template
     # The parser is responsible for taking a string template
@@ -91,7 +93,6 @@ module Rainbow
 
         unless tag_found
           # Unknown content between {}
-          # TODO: Can't parse UTF-8 character correctly
           x = @scanner.scan(/([\w]*?)(#{Regexp.escape(ctag)})/)
           unknown = @scanner[1]
           @result << [:static, "#{otag}#{unknown}#{@scanner[2]}"]
@@ -121,7 +122,7 @@ module Rainbow
         pos = @scanner.pos
         if @scanner.scan_until(regexp)
           @scanner.pos -= @scanner.matched.size
-          @scanner.pre_match[pos..-1]
+          @scanner.pre_match.byteslice(pos..-1)
         end
       end
 
@@ -134,7 +135,7 @@ module Rainbow
       end
 
       private
-      def regex(pattern, encoding='ASCII', options=0)
+      def regex(pattern, encoding='UTF-8', options=0)
         Regexp.new(pattern.encode(encoding),options)
       end
     end

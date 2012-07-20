@@ -168,12 +168,15 @@ describe Rainbow::Template::Parser do
       template = "中文測試{block:Posts}foo{/block:Posts}bar"
       # Parser will produce incorrect result with utf-8 character
       # Failed on purpose, known issue
+      template.encoding.to_s.must_equal "UTF-8"
       sexp = @parser.call(template)
       sexp.must_equal [:multi, [:static, "中文測試"],
                                [:block, "block:Posts", [:multi,  [:static, "foo"],
                                                                  [:close_block, "block:Posts"]]
-                               ]]
+                               ],
+                               [:static, "bar"]]
     end
+
   end
 end
 
