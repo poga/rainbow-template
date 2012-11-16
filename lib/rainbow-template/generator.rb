@@ -33,6 +33,8 @@ module Rainbow
                 block.compile
               end.join
             else
+              # add a pointer to parent-level context,
+              # so we can preform variable lookup recursively up to root level
               nest_ctx = context[exp[1]].merge({ :parentContext => single_level_context(context)})
               block = Block.new( exp[2], nest_ctx  )
               block.compile

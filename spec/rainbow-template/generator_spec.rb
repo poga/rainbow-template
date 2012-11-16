@@ -113,11 +113,11 @@ describe Rainbow::Template::Generator do
 
     it "should be able to generate variable string from a context proxy" do
       sexp = [:variable, "foo"]
-      def foo
+      def foo_method
         return "bar"
       end
 
-      @proxy = Rainbow::Template::ContextProxy.new({ "foo" => Rainbow::Template::HelperProxy.new("foo") }, binding)
+      @proxy = Rainbow::Template::ContextProxy.new({ "foo" => Rainbow::Template::HelperProxy.new("foo_method") }, binding)
       @generator.compile(sexp, @proxy).must_equal "bar"
     end
 
