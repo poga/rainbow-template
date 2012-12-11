@@ -53,6 +53,8 @@ module Rainbow
         @ctag ||= "}"
       end
 
+      alias call compile
+
       private
 
       def single_level_context(ctx)

@@ -5,7 +5,7 @@ describe "An Engine" do
     class Test < Rainbow::Template::Engine
     end
     @template = Test.new :parser => Rainbow::Template::Parser,
-                         :generator => Rainbow::Template::Generator,
+                         :generator => Rainbow::Template::StringGenerator,
                          :variable_tags => ["Test"],
                          :block_tags => ["block:Foo"]
   end
