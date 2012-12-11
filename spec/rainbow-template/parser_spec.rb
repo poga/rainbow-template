@@ -177,6 +177,16 @@ describe Rainbow::Template::Parser do
                                [:static, "bar"]]
     end
 
+    it "should be able to handle tags within plain-text {}" do
+      template = "div { color: {Title}; }"
+      sexp = @parser.call(template)
+      sexp.must_equal [:multi, [:static, "div "],
+                               [:static, "{"],
+                               [:static, " color: "],
+                               [:variable, "Title"],
+                               [:static, "; }"]]
+    end
+
   end
 end
 

@@ -50,6 +50,21 @@ describe "An Engine" do
     @template.call(rt).must_equal rt
   end
 
+  it "should be able to deal with css" do
+    rt = <<-TEMPLATE
+div {
+    color: {Test};
+}
+    TEMPLATE
+
+    @template.call(rt, {"Test" => "red"}).must_equal <<-TEMPLATE
+div {
+    color: red;
+}
+    TEMPLATE
+    
+  end
+
   it "should be able to deal with tags within javascript" do
     rt = <<-TEMPLATE
     Rainbow.getLoginStatus( function(response) {
