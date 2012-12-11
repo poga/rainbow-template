@@ -24,11 +24,11 @@ module Rainbow
         # embed variable_lookup function into template function
 
         # wrap string concat with variable definition and returning statement
-        @source = "var __p='';\n#{js_variable_lookup}\n//template start======\n#{@source}\nreturn __p;"
+        @source = "var __p='';\n#{js_variable_lookup}\n/*template start======*/\n#{@source}\nreturn __p;"
         # wrap whole function with an anonymous function
         @source = "(function(ctx) {\n#{@source}})"
 
-        return @source
+        return @source.gsub("\n", "")
       end
 
       alias call compile
@@ -100,18 +100,18 @@ module Rainbow
           var variable_path = function (ctx, stack, name) {
             var brackets = _.map(stack, function (x) { return '["' + x + '"]'; }).join();
             return "(ctx" + brackets + ")['" + name + "']";
-          }
+          };
           var variable_lookup = function (ctx, stack, name) {
               var result = eval(variable_path(ctx, stack, name));
             
               if (result === null) {
                 return "";
-              } if (typeof result != "undefined") {
+              } else if (typeof result != "undefined") {
                 return result;
               } else if (stack.length > 0) {
-                return variable_lookup(ctx, stack.slice(0, -1), name)
+                return variable_lookup(ctx, stack.slice(0, -1), name);
               } else {
-                return '#{otag}' + name + '#{ctag}'
+                return '#{otag}' + name + '#{ctag}';
               }
           };
         JAVASCRIPT
