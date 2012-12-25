@@ -44,6 +44,7 @@ module Rainbow
       private
 
       def js_compile!(exp, context, stack)
+        stack = stack.clone
         case exp.first
         when :multi
           # exp[0] = :multi
