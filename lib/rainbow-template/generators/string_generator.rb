@@ -6,6 +6,7 @@ module Rainbow
       end
 
       def compile(exp, context)
+        context = context.clone
         case exp.first
         when :multi
           # exp[0] = :multi

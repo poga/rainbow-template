@@ -51,6 +51,19 @@ describe Rainbow::Template::StringGenerator do
       @generator.compile(sexp, {"block:Text" => { "Body" => "hello world" }} ).must_equal "out of block hello world"
     end
 
+    it "should be able to compile multiple blocks with scoped variables" do
+      sexp = [:multi, [:static, "out of block "],
+                      [:block, "block:Text",[:multi, [:variable, "Body"],
+                                                     [:close_block, "block:Text"]]],
+                      [:block, "block:Text2",[:multi, [:variable, "Body2"],
+                                                      [:close_block, "block:Text"]]]]
+      @generator.compile(sexp, {}).must_equal "out of block "
+      @generator.compile(sexp, {"block:Text" => { "Body" => "hello world" }} ).must_equal "out of block hello world"
+      ctx = {"block:Text" => { "Body" => "hello world" },
+             "block:Text2" => { "Body2" => "hello world2" }}
+      @generator.compile(sexp, ctx ).must_equal "out of block hello worldhello world2"
+    end
+
     it "should be able to compile block with scoped variable but the variable is nil" do
       sexp = [:multi, [:static, "out of block "],
                       [:block, "block:Text",[:multi, [:variable, "Body"],
