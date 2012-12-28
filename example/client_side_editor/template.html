@@ -1,0 +1,31 @@
+<html>
+  <head>
+    <title>{Title}</title>
+    <meta name="color@Color" content="red" />
+    <meta name="text@Header" content="Hello" />
+    <meta name="text@title" content="Foo" />
+    <meta name="text@block:Nested/moo" content="1234567" />
+    <meta name="if@block:Show" content="1" />
+    <style>
+      h2 {
+        color: {Color};
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>{Header}</h2>
+    <ul>
+      {block:Post}
+      <li>{title}</li>
+      {/block:Post}
+    </ul>
+    {block:Show}
+    <h3>This is a block</h3>
+    {/block:Show}
+    {block:Nested}
+    <h3>This is a nested block: {moo}</h3>
+    {/block:Nested}
+  </body>
+</html>
+

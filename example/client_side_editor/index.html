@@ -1,0 +1,63 @@
+
+<div id="editors">
+{EditorUIs}
+<a id="go" href="#">save</a><br />
+</div>
+<iframe id="test" width="800px" height="600px"></iframe>
+<script src="underscore-min.js"></script>
+<script src="jquery-1.8.3.min.js"></script>
+<script src="jsonpath-0.8.0.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="css/colorpicker.css" />
+<script type="text/javascript" src="js/colorpicker.js"></script>
+<script>
+  var tmpl = {JsTemplate};
+  var defaultCtxSelectors = {DefaultCtxSelectors};
+  var ctxPathType = {CtxPathType};
+  var seedData = {seedData};
+
+  var renderRT = function() {
+    var doc = document.getElementById("test").contentWindow.document;
+    doc.open();
+    getCtxFromDefaultCtxSelectors();
+    doc.write(tmpl(newCtx));
+    doc.close();
+  };
+
+  var newCtx = {DefaultCtxSelectors}
+  var getCtxFromDefaultCtxSelectors = function () {
+    var selectors = jsonPath(defaultCtxSelectors, "$..*");
+    var ctx_path_expressions = jsonPath(defaultCtxSelectors, "$..*", {resultType: "PATH"});
+    _.each(selectors, function (selector, i) {
+      if (_.isString(selector)) {
+        console.log("Selector: " + selector + ", exp: " + ctx_path_expressions[i] + ", value: " + $("[data-rt='" + selector + "']").val());
+        // modify ctx based on type
+        if (ctxPathType[selector] === "if") {
+          console.log($("[data-rt='" + selector + "']").is(':checked'));
+          eval(ctx_path_expressions[i].replace(/\$/, "newCtx") + "=" + $("[data-rt='" + selector + "']").is(':checked'));
+        } else {
+          eval(ctx_path_expressions[i].replace(/\$/, "newCtx") + "='" + $("[data-rt='" + selector + "']").val() + "'");
+        }
+        console.log(newCtx);
+      }
+    });
+    _.extend(newCtx, seedData);
+    console.log(newCtx);
+  };
+  getCtxFromDefaultCtxSelectors();
+
+  // Initialize color picker
+  _.each(ctxPathType, function (type, selector) {
+    if (type === "color") {
+      $("[data-rt='" + selector + "']").ColorPicker({onChange: function (hsb, hex, rgb) {
+        $("[data-rt='" + selector + "']").val("#" + hex);
+      }});
+    }
+  });
+  
+</script>
+
+<script>
+  renderRT();
+
+  $("#go").click( function() { renderRT(); });
+</script>
